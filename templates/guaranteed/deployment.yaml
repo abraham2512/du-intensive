@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: du-workload-{{.Replica}}
+  annotations:
+    # Disable CPU balance with CRIO
+    irq-load-balancing.crio.io: "disable"
+    cpu-load-balancing.crio.io: "disable"
+    cpu-quota.crio.io: "disable"
+  labels:
+    group: load
+    svc: du-workload-{{.Replica}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: du-workload-{{.Replica}}
+  template:
+    metadata:
+      labels:
+        group: load
+        name: du-workload-{{.Replica}}
+        service-label: du-workload-gu-{{.Replica}}
+    spec:
+      runtimeClassName: {{ or .runtimeClassName "performance-openshift-node-performance-profile" }}
+      containers:
+        - image: "{{ .Image }}"
+          imagePullPolicy: Always
+          name: du-workload-{{.Replica}}
+          # Request and Limits must be identical for the Pod to be assigned to the QoS Guarantee
+          resources:
+            requests:
+              cpu: {{ or .CPULimit "32000m" }}
+              memory: {{ or .MemoryLimit "1024M" }}
+              hugepages-1Gi: {{ or .HugePagesLimit "16Gi" }}
+            limits:
+              cpu: {{ or .CPULimit "32000m" }}
+              memory: {{ or .MemoryLimit "1024M" }}
+              hugepages-1Gi: {{ or .HugePagesLimit "16Gi" }}
+          # securityContext:
+          #   privileged: true
+          env:
+            {{if eq .containerEnv  nil -}}
+                  - name: stress_cpu
+                    value: {{ or .CPUStress "32" }}
+                  - name: stress_vm
+                    value: {{or .VMStress  "1" }}
+                  - name: stress_vm-bytes
+                    value: {{or .VMStessBytes "512M" }}
+            {{- else -}}
+            {{ range $name, $value := .containerEnv }}
+            - name: {{ $name}}
+              value: {{ $value }}
+            {{- end -}}
+            {{- end }}
+          volumeMounts:
+            {{ range  $volume := .volumes -}}
+              - name: {{ $volume.name }}
+                mountPath: {{ or $volume.path ((list "/var/" ($volume.name | replace " " "" | replace "-" "" | replace "_" "")) | join "") }}
+            {{- end }}
+            - name: hugepage
+              mountPath: /hugepages
+      dnsPolicy: Default
+      terminationGracePeriodSeconds: 1
+      # Add not-ready/unreachable tolerations for 15 minutes so that node
+      # failure doesn't trigger pod deletion.
+      tolerations:
+        - key: "node.kubernetes.io/not-ready"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 900
+        - key: "node.kubernetes.io/unreachable"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 900
+      volumes:
+        {{ range  $volume := .volumes }}
+        - name: {{ $volume.name }}
+          {{$volume.type}}:
+
+            {{ if eq $volume.type "configMap" }}
+            name: {{ $volume.name }}
+            {{ else if eq $volume.type "secret" }}
+            secretName: {{ $volume.name }}
+            {{ else if eq $volume.type "persistentVolumeClaim" }}
+            claimName: {{ $volume.name }}
+            {{ end }}
+        {{ end }}
+        - name: hugepage
+          emptyDir:
+            medium: HugePage

@@ -12,55 +12,68 @@ jobs:
     objects:
 
     # Template of Gu Pods with fedora-stress-ng
-      - objectTemplate: templates/deployment.yaml
+      - objectTemplate: templates/guaranteed/service.yaml
+        replicas: 1
+      - objectTemplate: templates/guaranteed/configmap.yaml
+        replicas: 2
+      - objectTemplate: templates/guaranteed/secret.yaml
+        replicas: 4
+      - objectTemplate: templates/guaranteed/deployment.yaml
         replicas: 1
         inputVars:
           Image: {{ .FEDORA_STRESSNG_TEST_IMAGE }}
-      - objectTemplate: templates/service.yaml
-        replicas: 1
-      - objectTemplate: templates/configmap1.yaml
-        replicas: 1
-      - objectTemplate: templates/configmap2.yaml
-        replicas: 1
-      - objectTemplate: templates/secret1.yaml
-        replicas: 1
-      - objectTemplate: templates/secret2.yaml
-        replicas: 1
-      - objectTemplate: templates/secret3.yaml
-        replicas: 1
-      - objectTemplate: templates/secret4.yaml
-        replicas: 1
+          volumes:
+            - name: secret-1
+              type: secret
+            - name: secret-2
+              type: secret
+            - name: configmap-1
+              type: configMap
+            - name: configmap-2
+              type: configMap
+            - name: configmap-3
+              type: configMap
+            - name: configmap-4
+              type: configMap
 
-    # Template of Burstable pod with pvc 
-      # - objectTemplate: templates/deployment-burstable.yaml
-      #   replicas: 1
-      #   inputVars:
-      #     Image: {{ .FEDORA_STRESSNG_TEST_IMAGE }}
-      # - objectTemplate: templates/deployment-pv.yaml
-      #   replicas: 1
-      # - objectTemplate: templates/deployment-pvc.yaml
-      #   replicas: 1
+    # Template of Burstable pod with pvc
+      - objectTemplate: templates/burstable/pv.yaml
+        replicas: 1
+      - objectTemplate: templates/burstable/pvc.yaml
+        replicas: 1
+      - objectTemplate: templates/burstable/deployment.yaml
+        replicas: 1
+        inputVars:
+          Image: {{ .FEDORA_STRESSNG_TEST_IMAGE }}
+          volumes:
+            - name: pvc-claim-1
+              type: persistentVolumeClaim
+              path: /mnt/pvc-data
+      - objectTemplate: templates/deployment-pv.yaml
+        replicas: 1
+      - objectTemplate: templates/deployment-pvc.yaml
+        replicas: 1
 
     # Template of burstable pods with exec probes
-      - objectTemplate: templates/webserver-deployment.yaml
+      - objectTemplate: templates/webserver/server-deployment.yaml
         replicas: 10
         inputVars:
           Image: {{ .NGINX_TEST_IMAGE }}
-      - objectTemplate: templates/webserver-service.yaml
+      - objectTemplate: templates/webserver/service.yaml
         replicas: 10
-      - objectTemplate: templates/curl-deployment.yaml
+      - objectTemplate: templates/webserver/client-deployment.yaml
         replicas: 10
         inputVars:
           Image: {{ .CURL_TEST_IMAGE }}
 
     # Templates of burstable pods with kubeapiserver reqs
-      - objectTemplate: templates/kubectlapp-serviceaccount.yaml
+      - objectTemplate: templates/kubectlapp/serviceaccount.yaml
         replicas: 10
-      - objectTemplate: templates/kubectlapp-role.yaml
+      - objectTemplate: templates/kubectlapp/role.yaml
         replicas: 10
-      - objectTemplate: templates/kubectlapp-rolebinding.yaml
+      - objectTemplate: templates/kubectlapp/rolebinding.yaml
         replicas: 10
-      - objectTemplate: templates/kubectlapp-deployment.yaml
+      - objectTemplate: templates/kubectlapp/deployment.yaml
         replicas: 10
         inputVars:
           Image: {{ .KUBECTL_TEST_IMAGE }}
