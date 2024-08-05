@@ -6,7 +6,7 @@ jobs:
     burst: 4
     namespacedIterations: false
     namespace: workload
-    podWait: true
+    podWait: false
     cleanup: true
     waitWhenFinished: true
     maxWaitTimeout: 5m
