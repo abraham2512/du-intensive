@@ -6,9 +6,11 @@ jobs:
     burst: 4
     namespacedIterations: false
     namespace: workload
-    podWait: false
-    cleanup: false
-    waitWhenFinished: false
+    podWait: true
+    cleanup: true
+    waitWhenFinished: true
+    maxWaitTimeout: 10m
+    errorOnVerify: true
     objects:
 
     # Template of Gu Pods with fedora-stress-ng
