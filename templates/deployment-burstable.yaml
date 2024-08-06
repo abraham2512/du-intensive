@@ -51,7 +51,7 @@ spec:
             #   value: /mnt/pvc-data
           volumeMounts:
             - name: pvc-storage
-              mountPath: /mnt/pvc-data
+              mountPath: /tmp/pvc-data
       dnsPolicy: Default
       terminationGracePeriodSeconds: 1
       # Add not-ready/unreachable tolerations for 15 minutes so that node
