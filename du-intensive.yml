@@ -9,6 +9,11 @@ jobs:
     podWait: false
     cleanup: false
     waitWhenFinished: false
+    namespaceLabels:
+      security.openshift.io/scc.podSecurityLabelSync: false
+      pod-security.kubernetes.io/enforce: privileged
+      pod-security.kubernetes.io/audit: privileged
+      pod-security.kubernetes.io/warn: privileged
     objects:
 
     # Template of Gu Pods with fedora-stress-ng
