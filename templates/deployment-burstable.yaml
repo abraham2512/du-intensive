@@ -47,8 +47,8 @@ spec:
               value: "1"
             - name: stress_hdd-bytes
               value: "128m"
-            # - name: stress_temp-path
-            #   value: /mnt/pvc-data
+            - name: stress_temp-path
+              value: /tmp/pvc-data
           volumeMounts:
             - name: pvc-storage
               mountPath: /tmp/pvc-data
