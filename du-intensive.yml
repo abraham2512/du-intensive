@@ -37,7 +37,7 @@ jobs:
       # - objectTemplate: templates/deployment-burstable.yaml
       #   replicas: 1
       #   inputVars:
-      #     Image: {{ .FEDORA_STRESSNG_TEST_IMAGE }}
+      #     Image: "{{ .REGISTRY }}/fedora-stress-ng"
       # - objectTemplate: templates/deployment-pv.yaml
       #   replicas: 1
       # - objectTemplate: templates/deployment-pvc.yaml
