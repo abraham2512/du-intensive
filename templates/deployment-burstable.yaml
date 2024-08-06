@@ -22,6 +22,10 @@ spec:
         name: du-workload-bu-{{.Replica}}
     spec:
       runtimeClassName: performance-openshift-node-performance-profile
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 3000
+        fsGroup: 2000
       containers:
         - image: "{{ .Image }}"
           imagePullPolicy: Always
