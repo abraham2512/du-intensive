@@ -41,6 +41,10 @@ jobs:
         replicas: 1
       - objectTemplate: templates/deployment-pvc.yaml
         replicas: 1
+      - objectTemplate: templates/deployment-sa.yaml
+        replicas: 1
+      - objectTemplate: templates/deployment-rolebinding.yaml
+        replicas: 1
       - objectTemplate: templates/deployment-burstable.yaml
         replicas: 1
         inputVars:
