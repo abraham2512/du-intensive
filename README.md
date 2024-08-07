@@ -19,4 +19,5 @@ This workload is intended to be deployed by the ocp-far-edge-vran pipeline but t
 * Run the cpu_util test using ocp-far-edge-vran-tests pipeline
 
 ### Steps to run locally
-* Deploy DU workload with `start.sh`
+* export REGISTRY=quay.io/rh_ee_apalanis
+* Deploy DU workload with `kube-burner init --config du-intensive.yaml`
