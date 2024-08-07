@@ -20,7 +20,7 @@ jobs:
       - objectTemplate: templates/deployment.yaml
         replicas: 1
         inputVars:
-          Image: {{ .FEDORA_STRESSNG_TEST_IMAGE }}
+          Image: "{{ .REGISTRY }}/fedora-stress-ng"
       - objectTemplate: templates/service.yaml
         replicas: 1
       - objectTemplate: templates/configmap1.yaml
@@ -44,19 +44,19 @@ jobs:
       - objectTemplate: templates/deployment-burstable.yaml
         replicas: 1
         inputVars:
-          Image: {{ .FEDORA_STRESSNG_TEST_IMAGE }}
+          Image: "{{ .REGISTRY }}/fedora-stress-ng"
 
     # Template of burstable pods with exec probes
       - objectTemplate: templates/webserver-deployment.yaml
         replicas: 10
         inputVars:
-          Image: {{ .NGINX_TEST_IMAGE }}
+          Image: "{{ .REGISTRY }}/sampleapp"
       - objectTemplate: templates/webserver-service.yaml
         replicas: 10
       - objectTemplate: templates/curl-deployment.yaml
         replicas: 10
         inputVars:
-          Image: {{ .CURL_TEST_IMAGE }}
+          Image: "{{ .REGISTRY }}/curl"
 
     # Templates of burstable pods with kubeapiserver reqs
       - objectTemplate: templates/kubectlapp-serviceaccount.yaml
@@ -68,4 +68,4 @@ jobs:
       - objectTemplate: templates/kubectlapp-deployment.yaml
         replicas: 10
         inputVars:
-          Image: {{ .KUBECTL_TEST_IMAGE }}
+          Image: "{{ .REGISTRY }}/kubectl"
