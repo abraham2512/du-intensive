@@ -1,5 +1,5 @@
 
-## THIS HAS BEEN MOVED TO https://github.com/openshift-kni/du-intensive
+## THIS HAS BEEN MOVED TO https://github.com/openshift-kni/du-test-workloads
 
 ## Kube-burner-ocp based template for a RAN DU workload
 
